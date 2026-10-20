@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 import User from "../models/User.js";
 import Book from "../models/Book.js";
 import Ticket from "../models/Ticket.js";
-import { classifyAndScoreTicket, generateAiDraftResponse } from "../services/aiService.js";
+import { fallbackClassifier, fallbackDraftGenerator } from "../services/aiService.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -175,9 +175,10 @@ export const seedDatabase = async () => {
       if (!author) continue;
 
       const ticketNumber = `TICK-${1000 + i + 1}`;
-      const { category, priority } = classifyAndScoreTicket(item.subject, item.description);
+      console.log(`Seeding ticket ${i + 1}/${sampleTicketsSeed.length}: ${ticketNumber}...`);
+      const { category, priority } = fallbackClassifier(item.subject, item.description);
 
-      const aiDraft = generateAiDraftResponse({
+      const aiDraft = fallbackDraftGenerator({
         authorName: author.name,
         bookTitle: item.bookTitle,
         subject: item.subject,

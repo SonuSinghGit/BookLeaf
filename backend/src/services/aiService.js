@@ -15,7 +15,7 @@ const VALID_PRIORITIES = ["Critical", "High", "Medium", "Low"];
 /**
  * Fallback rule-based classifier
  */
-const fallbackClassifier = (subject = "", description = "") => {
+export const fallbackClassifier = (subject = "", description = "") => {
   const text = `${subject} ${description}`.toLowerCase();
 
   let category = "General Inquiry";
@@ -113,7 +113,7 @@ const fallbackClassifier = (subject = "", description = "") => {
 /**
  * Fallback rule-based draft generator
  */
-const fallbackDraftGenerator = ({
+export const fallbackDraftGenerator = ({
   authorName,
   bookTitle,
   subject,
@@ -215,6 +215,7 @@ const callGeminiApi = async (prompt) => {
     headers: {
       "Content-Type": "application/json",
     },
+    signal: AbortSignal.timeout(8000),
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
